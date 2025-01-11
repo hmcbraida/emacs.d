@@ -1,3 +1,10 @@
+;; Stop native compiler complaining about everything
+(setq native-comp-async-report-warnings-errors 'silent)
+
+;; Background alpha for transparency (does not work on mac :/)
+(set-frame-parameter nil 'alpha-background 85) ; current frame
+(add-to-list 'default-frame-alist '(alpha-background . 100)) ; future
+
 (require 'use-package)
 
 (setq use-package-always-ensure t)
