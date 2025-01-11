@@ -200,3 +200,4 @@
 ;; no-byte-compile: t
 ;; End:
 ;;; init.el ends here
+(put 'magit-edit-line-commit 'disabled nil)
