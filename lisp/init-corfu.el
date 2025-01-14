@@ -24,7 +24,8 @@
 
 
   (with-eval-after-load 'corfu
-    (corfu-popupinfo-mode))
+    (corfu-popupinfo-mode)
+    (keymap-set corfu-map "RET" nil))
 
   ;; Make Corfu also work in terminals, without disturbing usual behaviour in GUI
   (when (maybe-require-package 'corfu-terminal)

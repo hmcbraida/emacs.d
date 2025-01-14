@@ -52,9 +52,37 @@ point reaches the beginning or end of the buffer, stop there."
                                                                         :mccabe (:enabled nil)
                                                                         :pyflakes (:enabled nil)
                                                                         :flake8 (:enabled t))))))
+;; Stop spam
+(setq eglot-report-progress nil)
+
+;; LSP booster to stop UI blocking
+(use-package eglot-booster
+  :config (eglot-booster-mode))
 
 ;; Font
-(set-face-attribute 'default nil :font "Iosevka Nerd Font" :height 130)
+(if *is-a-mac*
+    (set-face-attribute 'default nil :font "Iosevka NF" :height 130)
+  (set-face-attribute 'default nil :font "Iosevka Nerd Font" :height 130))
+;; (set-face-attribute 'default nil :font "Iosevka Nerd Font" :height 130)
+
+;; Theme
+(use-package tao-theme
+  :config
+  (load-theme 'tao-yin))
+
+(when (maybe-require-package 'dimmer)
+  (setq-default dimmer-fraction 0.15)
+  (add-hook 'after-init-hook 'dimmer-mode)
+  (with-eval-after-load 'dimmer
+    ;; TODO: file upstream as a PR
+    (advice-add 'frame-set-background-mode :after (lambda (&rest args) (dimmer-process-all))))
+  (with-eval-after-load 'dimmer
+    ;; Don't dim in terminal windows. Even with 256 colours it can
+    ;; lead to poor contrast.  Better would be to vary dimmer-fraction
+    ;; according to frame type.
+    (defun sanityinc/display-non-graphic-p ()
+      (not (display-graphic-p)))
+    (add-to-list 'dimmer-exclusion-predicates 'sanityinc/display-non-graphic-p)))
 
 (require 'use-package)
 
@@ -108,6 +136,20 @@ point reaches the beginning or end of the buffer, stop there."
   (setq org-roam-directory (file-truename "~/org-roam"))
   :config
   (org-roam-db-autosync-mode t))
+
+(use-package envrc
+  :hook (after-init . envrc-global-mode))
+
+(use-package eldoc-box
+  :config
+  (global-set-key (kbd "<f5>") #'eldoc-box-help-at-point))
+
+(use-package vundo
+  :config
+  (global-set-key (kbd "C-x u") 'vundo))
+
+(global-set-key (kbd "C-_") 'undo)
+(global-set-key (kbd "M-_") 'undo-redo)
 
 (provide 'init-local)
 ;;; init-local.el ends here
