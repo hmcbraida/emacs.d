@@ -44,11 +44,11 @@
 
 
 ;; General performance tuning
-(when (require-package 'gcmh)
-  (setq gcmh-high-cons-threshold (* 128 1024 1024))
-  (add-hook 'after-init-hook (lambda ()
-                               (gcmh-mode)
-                               (diminish 'gcmh-mode))))
+;; (when (require-package 'gcmh)
+;;   (setq gcmh-high-cons-threshold (* 128 1024 1024))
+;;   (add-hook 'after-init-hook (lambda ()
+;;                                (gcmh-mode)
+;;                                (diminish 'gcmh-mode))))
 
 (setq jit-lock-defer-time 0)
 
@@ -71,7 +71,7 @@
 (require 'init-grep)
 (require 'init-uniquify)
 (require 'init-ibuffer)
-(require 'init-flymake)
+;; (require 'init-flymake)
 (require 'init-eglot)
 
 (require 'init-recentf)

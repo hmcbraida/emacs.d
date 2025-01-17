@@ -42,47 +42,60 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
 
-;; Eglot bindings
-(global-set-key (kbd "C-c C-a") #'eglot-code-actions)
+;; ;; Eglot bindings
+;; (global-set-key (kbd "C-c C-a") #'eglot-code-actions)
 
-;; LSP specific Eglot stuff
-(setq-default eglot-workspace-configuration
-              `((:pylsp . (:configurationSources ["flake8"]
-                                                 :plugins (:pycodestyle (:enabled nil)
-                                                                        :mccabe (:enabled nil)
-                                                                        :pyflakes (:enabled nil)
-                                                                        :flake8 (:enabled t))))))
-;; Stop spam
-(setq eglot-report-progress nil)
+;; ;; LSP specific Eglot stuff
+;; (setq-default eglot-workspace-configuration
+;;               `((:pylsp . (:configurationSources ["flake8"]
+;;                                                  :plugins (:pycodestyle (:enabled nil)
+;;                                                                         :mccabe (:enabled nil)
+;;                                                                         :pyflakes (:enabled nil)
+;;                                                                         :flake8 (:enabled t))))))
+;; ;; Stop spam
+;; (setq eglot-report-progress nil)
 
 ;; LSP booster to stop UI blocking
-(use-package eglot-booster
-  :config (eglot-booster-mode))
+;; (use-package eglot-booster
+;;   :config (eglot-booster-mode))
+
+;; Stop the eldoc from hopping around in the case of long documentation
+(setq eldoc-echo-area-use-multiline-p nil)
 
 ;; Font
 (if *is-a-mac*
-    (set-face-attribute 'default nil :font "Iosevka NF" :height 130)
+    (set-face-attribute 'default nil :font "Iosevka NF" :height 160)
+  ;; (set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 150)
   (set-face-attribute 'default nil :font "Iosevka Nerd Font" :height 130))
 ;; (set-face-attribute 'default nil :font "Iosevka Nerd Font" :height 130)
 
 ;; Theme
-(use-package tao-theme
-  :config
-  (load-theme 'tao-yin))
+(use-package tao-theme)
 
-(when (maybe-require-package 'dimmer)
-  (setq-default dimmer-fraction 0.15)
-  (add-hook 'after-init-hook 'dimmer-mode)
-  (with-eval-after-load 'dimmer
-    ;; TODO: file upstream as a PR
-    (advice-add 'frame-set-background-mode :after (lambda (&rest args) (dimmer-process-all))))
-  (with-eval-after-load 'dimmer
-    ;; Don't dim in terminal windows. Even with 256 colours it can
-    ;; lead to poor contrast.  Better would be to vary dimmer-fraction
-    ;; according to frame type.
-    (defun sanityinc/display-non-graphic-p ()
-      (not (display-graphic-p)))
-    (add-to-list 'dimmer-exclusion-predicates 'sanityinc/display-non-graphic-p)))
+(use-package zenburn-theme)
+
+;; Org mode heading size
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.4))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.4))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.4))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.4))))
+ )
+
+;; (when (maybe-require-package 'dimmer)
+;;   (setq-default dimmer-fraction 0.15)
+;;   (add-hook 'after-init-hook 'dimmer-mode)
+;;   (with-eval-after-load 'dimmer
+;;     ;; TODO: file upstream as a PR
+;;     (advice-add 'frame-set-background-mode :after (lambda (&rest args) (dimmer-process-all))))
+;;   (with-eval-after-load 'dimmer
+;;     ;; Don't dim in terminal windows. Even with 256 colours it can
+;;     ;; lead to poor contrast.  Better would be to vary dimmer-fraction
+;;     ;; according to frame type.
+;;     (defun sanityinc/display-non-graphic-p ()
+;;       (not (display-graphic-p)))
+;;     (add-to-list 'dimmer-exclusion-predicates 'sanityinc/display-non-graphic-p)))
 
 (require 'use-package)
 
@@ -147,6 +160,47 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package vundo
   :config
   (global-set-key (kbd "C-x u") 'vundo))
+
+(use-package vterm)
+
+(use-package flycheck
+  :init
+  (global-flycheck-mode))
+
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-pyright-langserver-command "basedpyright")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (XXX-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+(setq read-process-output-max (* 1024 1024))
+
+(setq lsp-idle-delay 0.500)
+
+(use-package lsp-pyright
+  :ensure t
+  :custom (lsp-pyright-langserver-command "basedpyright") ;; or basedpyright
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         (lsp))))
+
+(use-package posframe)
+
+(use-package lsp-ui)
+
+;; (use-package flycheck-eglot
+;;   :after
+;;   (flycheck eglot)
+;;   :custom (flycheck-eglot-exclusive nil)
+;;   :config
+;;   (global-flycheck-eglot-mode 1))
+
+(use-package scroll-restore)
 
 (global-set-key (kbd "C-_") 'undo)
 (global-set-key (kbd "M-_") 'undo-redo)

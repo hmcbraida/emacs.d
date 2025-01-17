@@ -27,7 +27,7 @@
  make-backup-files nil
  mouse-yank-at-point t
  save-interprogram-paste-before-kill t
- scroll-preserve-screen-position 'always
+ ;; scroll-preserve-screen-position 'always
  set-mark-command-repeat-pop t
  tooltip-delay 1.5
  truncate-lines nil
@@ -84,18 +84,20 @@
 
 
 
-;; (when (fboundp 'display-line-numbers-mode)
-;;   (setq-default display-line-numbers-width 3)
-;;   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-;;   (add-hook 'yaml-mode-hook 'display-line-numbers-mode)
-;;   (add-hook 'yaml-ts-mode-hook 'display-line-numbers-mode))
+(when (fboundp 'display-line-numbers-mode)
+  (setq-default display-line-numbers-width 3)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (add-hook 'yaml-mode-hook 'display-line-numbers-mode)
+  (add-hook 'yaml-ts-mode-hook 'display-line-numbers-mode))
+
+(setq display-line-numbers-widen t)
 
 
 
-(when (boundp 'display-fill-column-indicator)
-  (setq-default indicate-buffer-boundaries 'left)
-  (setq-default display-fill-column-indicator-character ?┊)
-  (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode))
+;; (when (boundp 'display-fill-column-indicator)
+;;   (setq-default indicate-buffer-boundaries 'left)
+;;   (setq-default display-fill-column-indicator-character ?┊)
+;;   (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode))
 
 
 
